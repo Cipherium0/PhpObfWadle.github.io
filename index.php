@@ -24,7 +24,7 @@ if (isset($_GET['thanks'])) {
     <title>PHP Kod Obfuscator</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/css/all.min.css">
-    <link href="assets/style.css" rel="stylesheet">
+    <link href="style.css" rel="stylesheet">
     <script src="animasyon.js"></script>
 </head>
 <body>
