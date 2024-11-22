@@ -1,1 +1,26 @@
-const _0x3accf3=_0x3689;function _0x1d4d(){const _0x5caf7c=['43218dXWHNa','animationDelay','classList','addEventListener','appendChild','4499705pkUHhE','6SOXrZb','DOMContentLoaded','drop','21gRYwPU','animationend','900ZEONGg','7477470LYjVdZ','style','createElement','remove','34893OuUaDv','4RUbtqA','5817602QunTsQ','random','1340481suITjP','9541544rpDAwA','animationDuration'];_0x1d4d=function(){return _0x5caf7c;};return _0x1d4d();}function _0x3689(_0x3d4fe0,_0x3c0b0b){const _0x1d4d80=_0x1d4d();return _0x3689=function(_0x3689bd,_0xe12df3){_0x3689bd=_0x3689bd-0x1c1;let _0x4a7f53=_0x1d4d80[_0x3689bd];return _0x4a7f53;},_0x3689(_0x3d4fe0,_0x3c0b0b);}(function(_0x1cb921,_0x5d67d1){const _0x599bda=_0x3689,_0x6c4e64=_0x1cb921();while(!![]){try{const _0x4625db=parseInt(_0x599bda(0x1c7))/0x1*(-parseInt(_0x599bda(0x1d5))/0x2)+parseInt(_0x599bda(0x1d2))/0x3*(parseInt(_0x599bda(0x1cf))/0x4)+-parseInt(_0x599bda(0x1c3))/0x5*(parseInt(_0x599bda(0x1c4))/0x6)+parseInt(_0x599bda(0x1d0))/0x7+parseInt(_0x599bda(0x1d3))/0x8+-parseInt(_0x599bda(0x1ce))/0x9*(-parseInt(_0x599bda(0x1c9))/0xa)+-parseInt(_0x599bda(0x1ca))/0xb;if(_0x4625db===_0x5d67d1)break;else _0x6c4e64['push'](_0x6c4e64['shift']());}catch(_0x4f8590){_0x6c4e64['push'](_0x6c4e64['shift']());}}}(_0x1d4d,0xbfe74),document[_0x3accf3(0x1c1)](_0x3accf3(0x1c5),function(){const _0x461c3e=_0x3accf3,_0xe3f5c0=document[_0x461c3e(0x1cc)]('div');_0xe3f5c0[_0x461c3e(0x1d7)]['add']('rain'),document['body'][_0x461c3e(0x1c2)](_0xe3f5c0);const _0x3997a3=()=>{const _0x3173f3=_0x461c3e,_0x986b1b=document[_0x3173f3(0x1cc)]('div');_0x986b1b[_0x3173f3(0x1d7)]['add'](_0x3173f3(0x1c6)),_0x986b1b[_0x3173f3(0x1cb)]['left']=Math[_0x3173f3(0x1d1)]()*0x64+'vw',_0x986b1b[_0x3173f3(0x1cb)][_0x3173f3(0x1d4)]=Math[_0x3173f3(0x1d1)]()*0x2+0x2+'s',_0x986b1b[_0x3173f3(0x1cb)][_0x3173f3(0x1d6)]=Math[_0x3173f3(0x1d1)]()*0x2+'s',_0xe3f5c0[_0x3173f3(0x1c2)](_0x986b1b),_0x986b1b[_0x3173f3(0x1c1)](_0x3173f3(0x1c8),()=>{const _0x3158c9=_0x3173f3;_0x986b1b[_0x3158c9(0x1cd)]();});};setInterval(_0x3997a3,0x1e);}));
+// Yağmur Damlalarının Oluşturulması ve Animasyonu
+document.addEventListener("DOMContentLoaded", function() {
+    const rainContainer = document.createElement('div');
+    rainContainer.classList.add('rain');
+    document.body.appendChild(rainContainer);
+
+    const createRainDrop = () => {
+        const drop = document.createElement('div');
+        drop.classList.add('drop');
+        
+        // Damlaların başlangıç pozisyonunu ve hızını rasgele yapalım
+        drop.style.left = `${Math.random() * 100}vw`;  // Rasgele sağa-sola
+        drop.style.animationDuration = `${Math.random() * 2 + 2}s`; // 2-4 saniye arasında hız
+        drop.style.animationDelay = `${Math.random() * 2}s`; // Damlalar arasındaki gecikme
+        
+        rainContainer.appendChild(drop);
+
+        // Damlayı silmek için animasyon bittiğinde temizleyelim
+        drop.addEventListener('animationend', () => {
+            drop.remove();
+        });
+    };
+
+    // Damlaların yaratılması
+    setInterval(createRainDrop, 30); // Her 30 ms'de yeni damla
+});
