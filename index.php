@@ -1,6 +1,517 @@
 <?php
-/*
-WaddleOs
-*/
+
+try {
+    error_reporting(0);
+ini_set('display_errors', 0); 
+
+ob_start();
+session_start();
+@ini_set('default_charset', 'utf-8');
+date_default_timezone_set('UTC');
+define('version', '0.1');
+
+if (isset($_GET['thanks'])) {
+    $setThanks = '<div class="alert alert-success"><i class="fa fa-beer"></i><strong>Teşekkürler!</strong> Bu projeye destek verdiğiniz için teşekkür ederim, her şeyin en iyisi sizinle olsun :) </div>';
+} else { 
+    $setThanks = ''; 
+}
+
+    echo '
+<html lang="tr">
+<<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PHP Kod Obfuscator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.3/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.8.0/css/all.min.css">
+    <link href="assets/style.css" rel="stylesheet">
+    <script src="animasyon.js"></script>
+</head>
+<body>
+    <div id="cont_wrap">
+        <div class="top-info">
+            <p><b>PHP Kod Obfuscator</b></p>
+            Merhaba ve Hoşgeldiniz! <small>Bu, PHP dosyaları için özel olarak kodlanmış, PHP obfuscatorıdır. Kodlar, PHP etiketlerini kullanmak yerine echo ve print kullanır.</small><br><br>
+            Obfuscation (gizleme) amacımız, kodları orijinal kaynaktan farklı hale getirmek ve başkalarının kodları düzenlemesini engellemektir, özellikle de kodlama bilmeyenler için.
+        </div>
+  <body>
+</head>
+        <div class="content">
+            '.$setThanks.'
+            
+            <form action="" method="post" id="obfuscation_form">
+                <input name="obf_start" type="hidden"/>
+                
+                <div class="group">
+                    <label for="obf_code_single"><h3>Tekli PHP Kod Obfuscation</h3></label>
+                    <textarea name="obf_code_single" placeholder="PHP Kaynak Kodu Girin" id="editing" spellcheck="false">'.$sourceCode.'</textarea>
+                </div>
+
+                <div class="group">
+                    <label for="settings"><h3>Obfuscation Ayarları</h3></label>
+                    
+                    <div>
+                        <b>Fonksiyon Adlarını Yeniden Adlandır</b>:
+                        <input type="checkbox" name="rn_fnc_name" checked />
+                        Min Uzunluk: <input name="rn_fnc_name_len_min" value="32" />
+                        Max Uzunluk: <input name="rn_fnc_name_len_max" value="64" />
+                    </div>
+
+                    <div>
+                        <b>Değişken Adlarını Yeniden Adlandır</b>:
+                        <input type="checkbox" name="rn_var_name" checked />
+                        Min Uzunluk: <input name="rn_var_name_len_min" value="32" />
+                        Max Uzunluk: <input name="rn_var_name_len_max" value="64" />
+                    </div>
+
+                    <div>
+                        <b>Kod Boşluk/Tabağı Kaldır ve Değiştir</b>:
+                        <input type="checkbox" name="use_space_tab_rem" checked />
+                    </div>
+
+                    <div>
+                        <b>HTML Encode/Decode Etiketleri</b>:
+                        <input type="checkbox" name="use_html_ende_tags" checked />
+                        Rastgele HTML Yorumları Ekle: <input type="checkbox" name="use_html_ende_comments" checked />
+                    </div>
+
+                    <div>
+                        <b>Encode/Decode Kod</b>:
+                        <input type="checkbox" name="use_encode_w_eval" checked />
+                        Tür:
+                        <select name="use_encode_w_eval_type">
+                            <option value="1">str_rot13(base64_encode(base64_encode(gzdeflate(</option>
+                            <option value="2">str_rot13(strrev(base64_encode(gzdeflate(</option>
+                            <option value="3">base64_encode(str_rot13(gzdeflate(str_rot13(</option>
+                            <option value="4" selected>base64_encode(gzdeflate(</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <b>PHP Dosyalarına veya Koda Başlık Ekleyin</b>:
+                        <textarea name="header_top" placeholder="Başlık ekleyin" spellcheck="false"></textarea>
+                    </div>
+                </div>
+
+                <div class="form-footer">
+                    <button type="button" class="button" onclick="document.getElementById(\'obfuscation_form\').submit();"><i class="fa fa-compress"></i> Obfuscation Sürecini Başlat</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</body>
+</html>';
+
+
+	function generateName($len){
+		$characters = '______0123456789_____ABCDEFG__HIJKLMNO_______0123456789_____PQRSTUVW__XYZ';
+	
+		$charactersLength = strlen($characters);
+		$randomString = '_';
+		for($i = 0; $i < $len; $i++){
+			
+			$randomString .= $characters[rand(0,$charactersLength - 1)];
+			
+		};
+
+		return $randomString;
+
+	};
+	function generateRandSpaces($len){
+		$randspaces = '';
+
+		for($i = 0; $i < $len; $i++){
+			
+			$randspaces .= ' ';
+			
+		};
+
+		return $randspaces;
+
+	};
+	if(isset($_POST['obf_start'])){
+		$scrollBottom = 1;
+		define("MySessionID",rand(100,9999999));
+		$error = 0;
+		$is_OBF_Single = ($_POST['obf_code_single'] === '') ? 0:1;
+		$is_OBF_Zip = 0;
+		if($is_OBF_Single == 1){
+			$obf_path_unpacked = 'files/';
+			$obf_path_packed = 'files/';
+			file_put_contents($obf_path_unpacked."obf_single_".MySessionID.".txt",$_POST['obf_code_single']); chmod($obf_path_unpacked."obf_single_".MySessionID.".txt", 0755);
+			$for_array_file_loop = array('obf_single_'.MySessionID.'.txt');
+
+		} elseif($is_OBF_Zip == 1){
+			$obf_path_unpacked = 'files/unpacked/';
+			$obf_path_packed = 'files/packed/';
+			$to_upload_file_path = $obf_path_unpacked.''.MySessionID.'/'.basename($_FILES["UploadedZipFile"]["name"]);
+			if($_FILES["UploadedZipFile"]["size"] >= 33554432){
+				$error = 100; goto End;
+
+			};
+			$for_array_file_loop = array();
+			$zip_file = new ZipArchive;
+			$result = $zip_file->open($_FILES["UploadedZipFile"]["tmp_name"]);
+			if($result === TRUE){
+				$php_cnt = 0; for( $in = 0; $in < $zip_file->numFiles; $in++){
+
+						$file_info = $zip_file->statIndex($in);
+						$file_type = pathinfo($file_info['name'],PATHINFO_EXTENSION);
+
+						if($file_type === 'php'){
+							
+							$for_array_file_loop[] = ''.MySessionID.'/'.$file_info['name'];
+							$php_cnt ++;
+						};
+				};
+
+				if($php_cnt === 0){
+					$error = 101; goto End;
+
+				} else {
+					$zip_file->extractTo($obf_path_unpacked.''.MySessionID.'/');
+
+				};
+
+			} else {
+				$error = 102; goto End;
+
+			};
+
+		} else {
+			$error = 103; goto End;
+
+		};
+		$htmlTagList = array("a","abbr","acronym","address","applet","area","article","aside","audio","b","base","basefont","bdi","bdo","bgsound","big","blink","blockquote","body","br","button","canvas","caption","center","cite","code","col","colgroup","content","data","datalist","dd","decorator","del","details","dfn","dir","div","dl","dt","element","em","embed","fieldset","figcaption","figure","font","footer","form","frame","frameset","h1","h2","h3","h4","h5","h6","head","header","hgroup","hr","html","i","iframe","img","input","ins","isindex","kbd","keygen","label","legend","li","link","listing","main","map","mark","marquee","menu","menuitem","meta","meter","nav","nobr","noframes","noscript","object","ol","optgroup","option","output","p","param","plaintext","pre","progress","q","rp","rt","ruby","s","samp","script","section","select","shadow","small","source","spacer","span","strike","strong","style","sub","summary","sup","table","tbody","td","template","textarea","tfoot","th","thead","time","title","tr","track","tt","u","ul","var","video","wbr","xmp");
+		$i = 0; $numech = 0; $numechP = 0;
+		$sesListOfFunctions = Array();
+		foreach($for_array_file_loop as $array_file){
+
+			# Load File
+			$getFileToClean = file_get_contents($obf_path_unpacked.''.$array_file);
+
+			preg_match_all('/(?<=function ).*?\b\w+\s*\(/', $getFileToClean, $sesFuncArrays); 
+
+			foreach($sesFuncArrays[0] as $sesArrSet){
+
+				if($sesArrSet == '__construct(') { continue; };	
+
+				$sesArrSet = str_replace('(','',$sesArrSet);
+				$sesListOfFunctions[''.$sesArrSet.''] = $sesArrSet;
+
+			};
+
+		};
+		foreach($for_array_file_loop as $array_file){
+			$getFileToClean = file_get_contents($obf_path_unpacked.''.$array_file);
+			$getFileToClean = $getFileToClean.''.PHP_EOL;
+			$getFileToClean = str_replace('https://', 'https:@@', $getFileToClean);
+			$getFileToClean = str_replace('http://', 'http:@@', $getFileToClean);
+			$getFileToClean = preg_replace('![ \n\r\t]+#.*[ \t]*[\r\n]!', "\n", $getFileToClean);  
+			$getFileToClean = preg_replace('!\/\*.*?\*\/!s', "\n", $getFileToClean); 
+			$getFileToClean = preg_replace('![ \n\r\t]\/\/.*[ \t]*[\r\n]!', "\n", $getFileToClean); 
+			$getFileToClean = preg_replace('~\<\!\-\-(.*?)\-\-\>~s', "\n", $getFileToClean);
+			$getFileToClean = preg_replace('~//<!\[CDATA\[\s*|\s*//\]\]>~', "\n", $getFileToClean); 
+			$getFileToClean = preg_replace('/\n\s*\n/', "\n", $getFileToClean);
+
+			$getFileToClean = str_replace('<?php','', $getFileToClean);
+			$getFileToClean = str_replace('<?','', $getFileToClean);
+			$getFileToClean = str_replace('?>','', $getFileToClean);
+			file_put_contents($obf_path_unpacked.''.$array_file,$getFileToClean); chmod($obf_path_unpacked.''.$array_file, 0755);
+			$php_code[$i] = fopen($obf_path_unpacked.''.$array_file, "r");
+
+			while(($line_code = fgets($php_code[$i])) !== false){
+				preg_match_all('/\$([a-zA-Z\x7f-\xff][a-zA-Z0-9_\x7f-\xff]*)/', $line_code, $sesVarArrays);
+				$setVarArrCase = Array();
+				foreach($sesVarArrays[0] as $sesArrFix){
+					
+					if($sesArrFix == '$this') { continue; };
+
+					$setVarArrCase[''.$sesArrFix.''] = $sesArrFix;
+
+				};
+				if(count($setVarArrCase) >= 1 && $_POST['rn_var_name'] == true){
+
+					if($_POST['rn_var_name_len_min'] > 200 ) { $setMin = 1; } else {
+						if($_POST['rn_var_name_len_min'] > $_POST['rn_var_name_len_max'] ) { $setMin = 1; } else { $setMin = $_POST['rn_var_name_len_min']; };
+					};
+					if($_POST['rn_var_name_len_max'] > 200 ) { $setMax = 200; } else { $setMax = $_POST['rn_var_name_len_max']; };
+					
+					$keys = array_map('strlen', array_keys($setVarArrCase));
+					array_multisort($keys, SORT_DESC, $setVarArrCase);
+
+					$cntVar = 1;
+					foreach($setVarArrCase as $sesVarArrays){
+
+						if($varArrayGlb['var_saved'][''.$sesVarArrays.''] != ""){
+							
+							$line_code = str_replace($sesVarArrays,$varArrayGlb['var_saved'][''.$sesVarArrays.''],$line_code);
+
+						} else {
+
+							$NewNamelen = rand($setMin,$setMax) + $cntVar;
+
+							$varArrayGlb['var_saved'][''.$sesVarArrays.''] = '$'.generateName($NewNamelen);
+
+							$line_code = str_replace(''.$sesVarArrays.'',$varArrayGlb['var_saved'][''.$sesVarArrays.''],$line_code);
+
+						};
+
+						$cntVar ++;
+
+					};
+
+				};
+				if(count($sesListOfFunctions) >= 1 && $_POST['rn_fnc_name'] == true){
+					if($_POST['rn_fnc_name_len_min'] > 200 ) { $setMin = 1; } else {
+						if($_POST['rn_fnc_name_len_min'] > $_POST['rn_fnc_name_len_max'] ) { $setMin = 1; } else { $setMin = $_POST['rn_fnc_name_len_min']; };
+					};
+					if($_POST['rn_fnc_name_len_max'] > 200 ) { $setMax = 200; } else { $setMax = $_POST['rn_fnc_name_len_max']; };
+					$keys = array_map('strlen', array_keys($sesListOfFunctions));
+					array_multisort($keys, SORT_DESC, $sesListOfFunctions);
+
+					$cntFn = 1;
+					foreach($sesListOfFunctions as $sesFuncArrays){
+						
+						if($varArrayGlb['func_saved'][''.$sesFuncArrays.''] != ""){
+							
+							$line_code = str_replace($sesFuncArrays,$varArrayGlb['func_saved'][''.$sesFuncArrays.''],$line_code);
+
+						} else {
+
+							$NewNamelen = rand($setMin,$setMax) + $cntFn;
+
+							$varArrayGlb['func_saved'][''.$sesFuncArrays.''] = ''.generateName($NewNamelen);
+
+							$line_code = str_replace(''.$sesFuncArrays.'',$varArrayGlb['func_saved'][''.$sesFuncArrays.''],$line_code);
+
+						};
+
+						$cntFn ++;
+
+					};
+
+				};
+				$line_code = str_replace('https:@@', 'https://', $line_code);
+				$line_code = str_replace('http:@@', 'http://', $line_code);
+				if($line_code === ""){
+
+					$setLineCode[$i][] = "";
+
+				} else {
+
+					$setLineCode[$i][] = $line_code;
+
+				};
+
+
+			};
+
+			fclose($php_code[$i]);
+			
+
+			$php_code_combined = implode('',$setLineCode[$i]);
+
+			if($_POST['use_html_ende_tags'] == true){
+				foreach($htmlTagList as $htmlTagl){
+					
+					if($_POST['use_html_ende_comments'] == true){
+
+						$htmlEntitlTagsRand = '<!-- '.generateRandSpaces(rand(5,20)).'Entitled '.generateName(rand(5,20)).'HTML '.generateRandSpaces(rand(5,20)).'Tag'.generateName(rand(5,20)).' -->';
+
+					} else {
+
+						$htmlEntitlTagsRand = '';
+
+					};
+
+					$php_code_combined = str_replace('<'.$htmlTagl.' ',htmlentities(htmlentities(''.$htmlEntitlTagsRand.'<'.$htmlTagl.'')).' ',$php_code_combined); # Ex: <a ...
+					$php_code_combined = str_replace('<'.$htmlTagl.'>',htmlentities(htmlentities(''.$htmlEntitlTagsRand.'<'.$htmlTagl.'>')),$php_code_combined); # Ex: <head>
+					$php_code_combined = str_replace('</'.$htmlTagl.'>',htmlentities(htmlentities('</'.$htmlTagl.'>'.$htmlEntitlTagsRand.'')),$php_code_combined); # Ex: </a>
+					
+				};
+			};
+			preg_match_all("/echo ?[\'\"](.*?)[\'\"];/ms", $php_code_combined, $echMatchCase);
+			foreach($echMatchCase[0] as $match){
+				$MadeRandNameFordecode = generateName(15);
+				$php_code_combined = str_replace($match,'$'.generateName(38).' = "<header><div>.<b>.</div></header>"; $'.$MadeRandNameFordecode.' = html_entity_decode(html_entity_decode(\''.$echMatchCase[1][$numech].'\')); $'.generateName(38).' = "<header><div>.<b>.</div></header>"; echo $'.$MadeRandNameFordecode.'; $'.generateName(38).' = "<header><div>.<b>.</div></header>";',$php_code_combined);
+				$numech ++;
+
+			}
+			preg_match_all("/print ?[\'\"](.*?)[\'\"];/ms", $php_code_combined, $echMatchCase);
+			foreach($echMatchCase[0] as $match){
+				$MadeRandNameFordecode = generateName(25);
+				$php_code_combined = str_replace($match,'$'.generateName(38).' = "<header><div>.<b>.</div></header>"; $'.$MadeRandNameFordecode.' = html_entity_decode(html_entity_decode(\''.$echMatchCase[1][$numechP].'\')); $'.generateName(38).' = "<header><div>.<b>.</div></header>"; print $'.$MadeRandNameFordecode.'; $'.generateName(38).' = "<header><div>.<b>.</div></header>";',$php_code_combined);
+				$numechP ++;
+
+			}
+
+			# Lastly Removing New Lines
+			if($_POST['use_space_tab_rem'] == true){
+				$php_code_combined = str_replace("	",' ', $php_code_combined);
+				$php_code_combined = str_replace("  ",' ', $php_code_combined);
+			};
+			$php_code_combined = str_replace("\r",' ', $php_code_combined);
+			$php_code_combined = str_replace("\n",' ', $php_code_combined);
+			$php_code_combined = $php_code_combined;
+			$php_result_code = '';
+
+			if($_POST['header_top'] !== ""){
+
+				$php_result_code .= '<?php'.PHP_EOL;
+				$php_result_code .= '/*'.PHP_EOL;
+				$php_result_code .= $_POST['header_top'].''.PHP_EOL;
+				$php_result_code .= '*/'.PHP_EOL;
+				$php_result_code .= '?>'.PHP_EOL;
+
+			};
+			
+			if($_POST['use_encode_w_eval'] == false){
+
+				$php_result_code .= $php_code_combined;
+
+			} else {
+
+				if($_POST['use_encode_w_eval_type'] === '1'){
+
+					$php_result_code .= '<?php eval(gzinflate(base64_decode(base64_decode(str_rot13("'.str_rot13(base64_encode(base64_encode(gzdeflate($php_code_combined)))).'"))))); ?>';
+
+				} elseif($_POST['use_encode_w_eval_type'] === '2'){
+
+					$php_result_code .= '<?php eval(gzinflate(base64_decode(strrev(str_rot13("'.str_rot13(strrev(base64_encode(gzdeflate($php_code_combined)))).'"))))); ?>';
+
+				} elseif($_POST['use_encode_w_eval_type'] === '3'){
+
+					$php_result_code .= '<?php eval(str_rot13(gzinflate(str_rot13(base64_decode("'.base64_encode(str_rot13(gzdeflate(str_rot13($php_code_combined)))).'"))))); ?>';
+
+				} elseif($_POST['use_encode_w_eval_type'] === '4'){
+
+					$php_result_code .= '<?php eval(gzinflate(base64_decode("'.base64_encode(gzdeflate($php_code_combined)).'"))); ?>';
+
+				} else {
+
+					$php_result_code .= $php_code_combined;
+
+				};
+
+			};
+			file_put_contents($obf_path_packed.''.$array_file,$php_result_code); chmod($obf_path_packed.''.$array_file, 0755);
+
+			$i ++;
+		};
+		if($is_OBF_Single == 1){
+
+			$Single_File_Content = file_get_contents($obf_path_packed.''.$array_file);
+
+			echo'
+				<label for="pwd"><h3 style="color:#38ad38;">Obfuscated Code Result</h3></label>
+				<textarea id="resutOut" spellcheck="false">'.$Single_File_Content.'</textarea>
+			';
+			unlink($obf_path_packed.''.$array_file);
+
+		} elseif($is_OBF_Zip == 1){
+
+			echo $Succ_S.' Files Has Been Obfuscated & Zipped'.$Succ_E;
+		};
+
+		if($error !== 0){
+
+			End:
+
+			if($error == 100){ echo $Err_S.' File Size Is To Big And Is Not Allowed To Upload'.$Err_E; }
+			elseif($error == 102){ echo $Err_S.' Opened Zip Was Not Valid And Failed To Extract'.$Err_E; }
+			elseif($error == 103){ echo $Err_S.' Both TextArea And Upload Are Empty'.$Err_E; }
+			else { echo $Err_S.' Something went wrong, Check your files & try again!'.$Err_E; };
+
+		};
+		
+		unset($varArrayGlb);
+		unset($varArrayGlb);
+		unset($setVarArrCase);
+		unset($sesFuncArray);
+		
+	};
+	echo'</div>
+
+<div>
+    <div style="height:50px;"></div>
+    <center>
+        <div class="footer-content">
+            <p style="font-size: 14px; color: #888;">&copy; 2023 <b>Waddleobf.vercell.app</b>, All Rights Reserved</p>
+            <p style="font-size: 12px; color: #bbb; margin-top: 10px;">All visual aspects of this website have been coded by Waddleobf.vercell.app except for font-awesome icons.</p>
+        </div>
+    </center>
+    <div style="height:50px;"></div>
+</div>
+<script>
+    $(document).ready(function() {
+        $("input#file-upload").change(function() {
+            var ele = document.getElementById($("input#file-upload").attr("id"));
+            var result = ele.files;
+            $("#file_name_output").html(result[0].name);
+        });
+
+        if('.$scrollBottom.' == 1){
+            $("html,body").animate({scrollTop: document.body.scrollHeight},"slow");
+        };
+    });
+</script>
+</body>
+</html>
+
+<style>
+    /* Footer Styling */
+    .footer-content {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+
+    .footer-content p {
+        font-family: , sans-serif;
+        line-height: 1.5;
+        color: #888;
+        margin: 0;
+    }
+
+    .footer-content b {
+        color: #00bcd4;
+    }
+
+    .footer-content a {
+        color: #00bcd4;
+        text-decoration: none;
+    }
+
+    .footer-content a:hover {
+        text-decoration: underline;
+    }
+
+    footer {
+        background-color: #333;
+        color: white;
+        padding: 30px 0;
+        font-size: 14px;
+        text-align: center;
+    }
+
+    footer p {
+        margin: 5px 0;
+    }
+
+    footer b {
+        color: #00bcd4;
+    }
+
+    footer .small-text {
+        font-size: 12px;
+        color: #bbb;
+        margin-top: 15px;
+    
+';
+		
+} catch (Exception $err) {
+	echo $err->getMessage();
+};
+
 ?>
-<?php eval(str_rot13(gzinflate(str_rot13(base64_decode("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"))))); ?>
