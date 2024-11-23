@@ -1,20 +1,36 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Giriş Yap</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Giriş Sayfası</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>Giriş Yap</h1>
+        <!-- Web'den Çekilen Logo -->
+        <img src="https://r.resimlink.com/Td16qZOEIo.jpg" alt="Logo" class="logo"> <!-- Burada URL'yi istediğiniz logonun URL'si ile değiştirin -->
+
+        <h2>Şifreyi Girin</h2>
         <form id="loginForm">
-            <input type="password" id="password" placeholder="Şifreyi Girin" required />
+            <input type="password" id="password" placeholder="Şifre" required>
             <button type="submit">Giriş Yap</button>
         </form>
-        <p id="error" class="hidden">Yanlış şifre! Tekrar deneyin.</p>
     </div>
-    <script src="index.js"></script>
+
+    <script>
+        const correctPassword = "Sexs0909"; // Doğru şifre
+
+        document.getElementById("loginForm").addEventListener("submit", function(event) {
+            event.preventDefault();
+            const password = document.getElementById("password").value;
+
+            if (password === correctPassword) {
+                window.location.href = "verify.html"; // Şifre doğruysa yönlendir
+            } else {
+                alert("Yanlış şifre, tekrar deneyin.");
+            }
+        });
+    </script>
 </body>
 </html>
