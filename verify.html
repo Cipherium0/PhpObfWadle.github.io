@@ -15,27 +15,6 @@
     </div>
 
     <script>
-        const gistURL = "https://gist.githubusercontent.com/Cipherium0/a1a879a7ef168ab379c7991dfaad2110/raw/7c90f4c74f4aea70eb1501e1374fa2dc63c0d907/gistfile1.txt";
-
-        let codes = []; // Şifreleri depolamak için boş dizi
-
-        // Gist'ten şifreleri al<!DOCTYPE html>
-<html lang="tr">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doğrulama Sayfası</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="verify.css">
-</head>
-<body>
-    <div class="container">
-        <h2>Doğrulama Şifresi</h2>
-        <p><span id="verificationCode" class="code">Yükleniyor...</span></p>
-        <button class="copy-btn" onclick="copyCode()">Şifreyi Kopyala</button>
-    </div>
-
-    <script>
         // 30 adet sabit 6 haneli şifre
         const codes = [
             735698, 790958, 619280, 344862, 878507, 559021, 289984, 535018, 481808, 910420, 
@@ -99,53 +78,6 @@
 
         // Sayfa yüklendiğinde ve her 1 dakikada bir şifreyi güncelle
         displayVerificationCode(); // İlk şifreyi göster
-        setInterval(displayVerificationCode, 60000); // 60000 ms = 1 dakika
-    </script>
-</body>
-</html>
-
-        async function fetchCodes() {
-            try {
-                const response = await fetch(gistURL);
-                const data = await response.text();
-                codes = data.split("\n").map(code => code.trim()).filter(code => code.length === 6); // 6 haneli şifreleri filtrele
-                displayVerificationCode(); // İlk şifreyi göster
-            } catch (error) {
-                console.error("Şifreler alınırken bir hata oluştu:", error);
-                document.getElementById("verificationCode").textContent = "Hata!";
-            }
-        }
-
-        // Şu anki dakikaya göre bir indeks hesapla
-        function getCurrentIndex() {
-            const now = new Date(); // Şu anki zamanı al
-            const minute = now.getUTCMinutes(); // UTC zamanının dakikasını al
-            return codes.length > 0 ? minute % codes.length : 0; // Şifre listesi uzunluğuna göre mod al
-        }
-
-        // Şifreyi gösteren fonksiyon
-        function displayVerificationCode() {
-            if (codes.length > 0) {
-                const currentIndex = getCurrentIndex(); // Mevcut indeks
-                const code = codes[currentIndex]; // Şifreyi seç
-                document.getElementById("verificationCode").textContent = code;
-            }
-        }
-
-        // Kopyalama fonksiyonu
-        function copyCode() {
-            const code = document.getElementById("verificationCode").textContent;
-            const textarea = document.createElement("textarea");
-            textarea.value = code;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-            alert("Şifre kopyalandı: " + code);
-        }
-
-        // Sayfa yüklendiğinde şifreleri al ve her 1 dakikada bir şifreyi güncelle
-        fetchCodes();
         setInterval(displayVerificationCode, 60000); // 60000 ms = 1 dakika
     </script>
 </body>
