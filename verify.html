@@ -30,6 +30,12 @@
     </div>
 
     <script>
+        // URL'deki kodu almak için fonksiyon
+        function getCodeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.hash.substring(1));
+            return urlParams.get('<kod>'); // '<kod>' kısmını burada kullanıyoruz
+        }
+
         function generateVerificationCode() {
             const timestamp = Math.floor(Date.now() / 60000);
             const code = (timestamp % 900000) + 100000;
@@ -37,9 +43,15 @@
         }
 
         function displayVerificationCode() {
-            const code = generateVerificationCode();
-            // Ekranda şifreyi göster
-            document.getElementById("verificationCode").textContent = code;
+            const codeFromUrl = getCodeFromUrl(); // URL'deki kodu al
+            if (codeFromUrl) {
+                // URL'deki kod varsa, onu göster
+                document.getElementById("verificationCode").textContent = codeFromUrl;
+            } else {
+                // URL'de kod yoksa, yeni bir doğrulama kodu oluştur
+                const code = generateVerificationCode();
+                document.getElementById("verificationCode").textContent = code;
+            }
         }
 
         // Kopyalama fonksiyonu
@@ -54,9 +66,8 @@
             alert("Şifre kopyalandı: " + code);
         }
 
-        // Şifreyi ilk başta göster ve her 60 saniyede bir güncelle
+        // Sayfa yüklendiğinde doğrulama kodunu göster
         displayVerificationCode();
-        setInterval(displayVerificationCode, 60000); // Her dakika şifreyi güncelle
     </script>
 </body>
 </html>
