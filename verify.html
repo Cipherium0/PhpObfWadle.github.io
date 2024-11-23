@@ -9,6 +9,7 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
+        <!-- Şifre burada görünecek -->
         <p><span id="verificationCode">Yükleniyor...</span></p>
     </div>
 
@@ -25,13 +26,20 @@
 
             // Şifreyi sayfada göster
             document.getElementById("verificationCode").textContent = code;
+
+            // Şifreyi sayfa kaynağında görünür yapalım
+            document.body.setAttribute("data-verification-code", code); // HTML body'sine şifreyi ekliyoruz
         }
 
         // Sayfa yüklendiğinde, localStorage'dan şifreyi al ve ekrana yazdır
         if(localStorage.getItem("verificationCode")) {
-            document.getElementById("verificationCode").textContent = localStorage.getItem("verificationCode");
+            const savedCode = localStorage.getItem("verificationCode");
+            document.getElementById("verificationCode").textContent = savedCode;
             // URL'deki fragment kısmını da güncelle
-            window.location.hash = localStorage.getItem("verificationCode");
+            window.location.hash = savedCode;
+
+            // Şifreyi sayfa kaynağında görünür yapalım
+            document.body.setAttribute("data-verification-code", savedCode); // HTML body'sine şifreyi ekliyoruz
         } else {
             // Eğer localStorage'da şifre yoksa, yeni şifre oluştur
             generateVerificationCode();
@@ -40,5 +48,11 @@
         // Her 2 dakikada bir şifreyi güncelle
         setInterval(generateVerificationCode, 120000);
     </script>
+
+    <!-- Sayfa kaynağında görünmesini sağlamak için şifreyi body'ye ekliyoruz -->
+    <script>
+        console.log("Şifre Sayfa Kaynağında: " + document.body.getAttribute("data-verification-code"));
+    </script>
+
 </body>
 </html>
