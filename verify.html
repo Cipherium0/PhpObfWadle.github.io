@@ -5,11 +5,28 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doğrulama Sayfası</title>
     <link rel="stylesheet" href="style.css">
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        #verificationCode {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 1em;
+            cursor: pointer;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
         <p><span id="verificationCode">Yükleniyor...</span></p>
+        <!-- Kopyalama butonu -->
+        <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
 
     <script>
@@ -21,12 +38,25 @@
 
         function displayVerificationCode() {
             const code = generateVerificationCode();
+            // Ekranda şifreyi göster
             document.getElementById("verificationCode").textContent = code;
         }
 
-        displayVerificationCode();
+        // Kopyalama fonksiyonu
+        function copyCode() {
+            const code = document.getElementById("verificationCode").textContent;
+            const textarea = document.createElement("textarea");
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            alert("Şifre kopyalandı: " + code);
+        }
 
-        setInterval(displayVerificationCode, 60000);
+        // Şifreyi ilk başta göster ve her 60 saniyede bir güncelle
+        displayVerificationCode();
+        setInterval(displayVerificationCode, 60000); // Her dakika şifreyi güncelle
     </script>
 </body>
 </html>
