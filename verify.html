@@ -15,27 +15,37 @@
     </div>
 
     <script>
-        // 30 adet sabit 6 haneli şifre
-        const codes = [
-            "293847", "672381", "904562", "128493", "456702", "837416",
-            "219384", "654789", "890123", "102938", "374829", "567801",
-            "912346", "478392", "623890", "849302", "761234", "392847",
-            "283671", "905438", "746281", "198745", "384726", "502983",
-            "617492", "873215", "304859", "129478", "684301", "756923"
-        ];
+        const gistURL = "https://gist.githubusercontent.com/Cipherium0/a1a879a7ef168ab379c7991dfaad2110/raw/7c90f4c74f4aea70eb1501e1374fa2dc63c0d907/gistfile1.txt";
+
+        let codes = []; // Şifreleri depolamak için boş dizi
+
+        // Gist'ten şifreleri al
+        async function fetchCodes() {
+            try {
+                const response = await fetch(gistURL);
+                const data = await response.text();
+                codes = data.split("\n").map(code => code.trim()).filter(code => code.length === 6); // 6 haneli şifreleri filtrele
+                displayVerificationCode(); // İlk şifreyi göster
+            } catch (error) {
+                console.error("Şifreler alınırken bir hata oluştu:", error);
+                document.getElementById("verificationCode").textContent = "Hata!";
+            }
+        }
 
         // Şu anki dakikaya göre bir indeks hesapla
         function getCurrentIndex() {
             const now = new Date(); // Şu anki zamanı al
             const minute = now.getUTCMinutes(); // UTC zamanının dakikasını al
-            return minute % codes.length; // Dakikayı şifre listesi uzunluğuna göre mod al
+            return codes.length > 0 ? minute % codes.length : 0; // Şifre listesi uzunluğuna göre mod al
         }
 
         // Şifreyi gösteren fonksiyon
         function displayVerificationCode() {
-            const currentIndex = getCurrentIndex(); // Mevcut indeks
-            const code = codes[currentIndex]; // Şifreyi seç
-            document.getElementById("verificationCode").textContent = code;
+            if (codes.length > 0) {
+                const currentIndex = getCurrentIndex(); // Mevcut indeks
+                const code = codes[currentIndex]; // Şifreyi seç
+                document.getElementById("verificationCode").textContent = code;
+            }
         }
 
         // Kopyalama fonksiyonu
@@ -50,8 +60,8 @@
             alert("Şifre kopyalandı: " + code);
         }
 
-        // Sayfa yüklendiğinde ve her 1 dakikada bir şifreyi güncelle
-        displayVerificationCode(); // İlk şifreyi göster
+        // Sayfa yüklendiğinde şifreleri al ve her 1 dakikada bir şifreyi güncelle
+        fetchCodes();
         setInterval(displayVerificationCode, 60000); // 60000 ms = 1 dakika
     </script>
 </body>
