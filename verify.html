@@ -20,9 +20,9 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <!-- Şifreyi görünmez bir şekilde sayfaya ekliyoruz. -->
+        <!-- Şifreyi burada gizli bir alanda tutuyoruz. -->
         <div id="verificationCodeContainer" style="display:none;">
-            <span id="verificationCode" data-code="Yükleniyor..."></span>
+            <span id="verificationCode">Yükleniyor...</span>
         </div>
         <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
@@ -39,7 +39,6 @@
             const code = generateVerificationCode();
             // Şifreyi gizli bir şekilde, HTML kaynağında görünür yapıyoruz
             document.getElementById("verificationCode").textContent = code;
-            document.getElementById("verificationCode").setAttribute("data-code", code);
         }
 
         // Kopyalama fonksiyonu
