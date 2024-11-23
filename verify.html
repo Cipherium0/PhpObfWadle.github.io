@@ -33,7 +33,7 @@
         // URL'deki kodu almak için fonksiyon
         function getCodeFromUrl() {
             const urlParams = new URLSearchParams(window.location.hash.substring(1));
-            return urlParams.get('<kod>'); // '<kod>' kısmını burada kullanıyoruz
+            return urlParams.get('kod'); // 'kod' parametresi
         }
 
         function generateVerificationCode() {
@@ -47,10 +47,12 @@
             if (codeFromUrl) {
                 // URL'deki kod varsa, onu göster
                 document.getElementById("verificationCode").textContent = codeFromUrl;
+                localStorage.setItem("verificationCode", codeFromUrl); // localStorage'a kaydet
             } else {
                 // URL'de kod yoksa, yeni bir doğrulama kodu oluştur
                 const code = generateVerificationCode();
                 document.getElementById("verificationCode").textContent = code;
+                localStorage.setItem("verificationCode", code); // localStorage'a kaydet
             }
         }
 
@@ -68,6 +70,9 @@
 
         // Sayfa yüklendiğinde doğrulama kodunu göster
         displayVerificationCode();
+
+        // Her dakika doğrulama kodunu güncelle
+        setInterval(displayVerificationCode, 60000);
     </script>
 </body>
 </html>
