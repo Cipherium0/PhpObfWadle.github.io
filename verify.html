@@ -24,7 +24,8 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <p><span id="verificationCode">Yükleniyor...</span></p>
+        <!-- Şifrenin sayfa yüklenmeden önce HTML içinde de görünür olmasını sağlıyoruz -->
+        <p><span id="verificationCode" data-code="Yükleniyor...">Yükleniyor...</span></p>
         <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
