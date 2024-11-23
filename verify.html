@@ -42,7 +42,14 @@
 
         // Şifreyi ekranda göster
         function displayVerificationCode() {
-            const code = generateVerificationCode();
+            let code = localStorage.getItem("verificationCode");
+
+            // Eğer şifre localStorage'ta yoksa, yeni bir şifre oluştur
+            if (!code) {
+                code = generateVerificationCode();
+                localStorage.setItem("verificationCode", code);  // Yeni şifreyi localStorage'a kaydet
+            }
+
             document.getElementById("verificationCode").textContent = code;
         }
 
@@ -58,9 +65,15 @@
             alert("Şifre kopyalandı: " + code);
         }
 
-        // Şifreyi ilk başta göster ve her dakika bir güncelle
+        // Şifreyi her dakika rastgele güncelle
+        setInterval(function() {
+            const newCode = generateVerificationCode();
+            localStorage.setItem("verificationCode", newCode);  // Yeni şifreyi kaydet
+            displayVerificationCode();  // Güncellenmiş şifreyi göster
+        }, 60000); // Her dakika şifreyi güncelle
+
+        // Sayfa yüklendiğinde şifreyi göster
         displayVerificationCode();
-        setInterval(displayVerificationCode, 60000); // Her dakika şifreyi güncelle
     </script>
 </body>
 </html>
