@@ -19,37 +19,26 @@
             font-size: 1em;
             cursor: pointer;
         }
-        .interval-info {
-            font-size: 1em;
-            margin-top: 10px;
-        }
     </style>
 </head>
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
         <p><span id="verificationCode">Yükleniyor...</span></p>
+        <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
-        <p class="interval-info">Şifre her dakika rastgele değişecektir.</p>
     </div>
 
     <script>
-        // Rastgele şifre oluşturma fonksiyonu
         function generateVerificationCode() {
-            const code = Math.floor(100000 + Math.random() * 900000); // 6 haneli rastgele şifre
+            const timestamp = Math.floor(Date.now() / 60000);
+            const code = (timestamp % 900000) + 100000;
             return code;
         }
 
-        // Şifreyi ekranda göster
         function displayVerificationCode() {
-            let code = localStorage.getItem("verificationCode");
-
-            // Eğer şifre localStorage'ta yoksa, yeni bir şifre oluştur
-            if (!code) {
-                code = generateVerificationCode();
-                localStorage.setItem("verificationCode", code);  // Yeni şifreyi localStorage'a kaydet
-            }
-
+            const code = generateVerificationCode();
+            // Ekranda şifreyi göster
             document.getElementById("verificationCode").textContent = code;
         }
 
@@ -65,15 +54,9 @@
             alert("Şifre kopyalandı: " + code);
         }
 
-        // Şifreyi her dakika rastgele güncelle
-        setInterval(function() {
-            const newCode = generateVerificationCode();
-            localStorage.setItem("verificationCode", newCode);  // Yeni şifreyi kaydet
-            displayVerificationCode();  // Güncellenmiş şifreyi göster
-        }, 60000); // Her dakika şifreyi güncelle
-
-        // Sayfa yüklendiğinde şifreyi göster
+        // Şifreyi ilk başta göster ve her 60 saniyede bir güncelle
         displayVerificationCode();
+        setInterval(displayVerificationCode, 60000); // Her dakika şifreyi güncelle
     </script>
 </body>
 </html>
