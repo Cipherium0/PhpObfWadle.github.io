@@ -33,12 +33,12 @@
         // URL'deki kodu almak için fonksiyon
         function getCodeFromUrl() {
             const urlParams = new URLSearchParams(window.location.hash.substring(1));
-            return urlParams.get('<kod>'); // '<kod>' kısmını burada kullanıyoruz
+            return urlParams.get('kod'); // 'kod' parametresini al
         }
 
         function generateVerificationCode() {
             const timestamp = Math.floor(Date.now() / 60000);
-            const code = (timestamp % 900000) + 100000;
+            const code = (timestamp % 900000) + 100000; // 6 haneli bir sayı üretir
             return code;
         }
 
