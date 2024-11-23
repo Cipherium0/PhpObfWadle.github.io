@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Konfigürasyon Sayfası</title>
+    <style>
+        .container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        #verificationCode {
+            font-size: 2em;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Doğrulama Şifresi</h2>
+        <p><span id="verificationCode">Yükleniyor...</span></p>
+    </div>
+
+    <script>
+        // localStorage'dan doğrulama kodunu alıp göster
+        function displayVerificationCode() {
+            const code = localStorage.getItem("verificationCode");
+            if (code) {
+                document.getElementById("verificationCode").textContent = code;
+            } else {
+                document.getElementById("verificationCode").textContent = "Yükleniyor...";
+            }
+        }
+
+        // Sayfa yüklendiğinde doğrulama kodunu göster
+        displayVerificationCode();
+
+        // Her dakika kodu güncelle
+        setInterval(displayVerificationCode, 60000);
+    </script>
+</body>
+</html>
