@@ -19,7 +19,91 @@
 
         let codes = []; // Şifreleri depolamak için boş dizi
 
-        // Gist'ten şifreleri al
+        // Gist'ten şifreleri al<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doğrulama Sayfası</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="verify.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Doğrulama Şifresi</h2>
+        <p><span id="verificationCode" class="code">Yükleniyor...</span></p>
+        <button class="copy-btn" onclick="copyCode()">Şifreyi Kopyala</button>
+    </div>
+
+    <script>
+        // 30 adet sabit 6 haneli şifre
+        const codes = [
+            735698, 790958, 619280, 344862, 878507, 559021, 289984, 535018, 481808, 910420, 
+395231, 555055, 765094, 682842, 770477, 641024, 270380, 870667, 426103, 998823, 
+803559, 626034, 157465, 931298, 864624, 828212, 246600, 103677, 770614, 752814, 
+747063, 934767, 682317, 287236, 336912, 867318, 986141, 724450, 496252, 991701, 
+915478, 842394, 311070, 888744, 292299, 710995, 475958, 191079, 636084, 918232, 
+112681, 357547, 627112, 613639, 474522, 719781, 918350, 894257, 951294, 321679, 
+422667, 153549, 559811, 638145, 642316, 482064, 766307, 376589, 267078, 964299, 
+714397, 417528, 820690, 349506, 170477, 721172, 275204, 833240, 873873, 746704, 
+351760, 618145, 955440, 894655, 307295, 685668, 567968, 211871, 257961, 236324, 
+904143, 340506, 487334, 586255, 463064, 128977, 954425, 234409, 285458, 157242, 
+777731, 851522, 809646, 923682, 401837, 756901, 731477, 849748, 849240, 775716, 
+208780, 967891, 702633, 663000, 418901, 476135, 230153, 776148, 550827, 310947, 
+268212, 917553, 593324, 185580, 276116, 523594, 121692, 374654, 747216, 599995, 
+671377, 679079, 489791, 941600, 779826, 810424, 586144, 551564, 725938, 746770, 
+560452, 780902, 481875, 803931, 361349, 720304, 855637, 326733, 864078, 308366, 
+435578, 362207, 952435, 263729, 645275, 460740, 441911, 508415, 569391, 169306, 
+801649, 884386, 503124, 692560, 116104, 975162, 736064, 764685, 568060, 394617, 
+660368, 933698, 511021, 383524, 452844, 537741, 806897, 394953, 527839, 663132, 
+638272, 104334, 875104, 448538, 477680, 360965, 228188, 608077, 999361, 113491, 
+570238, 530120, 879589, 828274, 846581, 779910, 721296, 877790, 496454, 298118, 
+593888, 737487, 150698, 240718, 674509, 716120, 908254, 103107, 604561, 535243, 
+390889, 327414, 529575, 716221, 300148, 513034, 422195, 575723, 782302, 423769, 
+930617, 877496, 396958, 569888, 584571, 906409, 721684, 599983, 844922, 185977, 
+484830, 617683, 490288, 392556, 832808, 669059, 694651, 171824, 865704, 362263, 
+291928, 224818, 897842, 243058, 193725, 558281, 687017, 176365, 162828, 931695, 
+743887, 369473, 536395, 792005, 484224, 850268, 410029, 184721, 925267, 807201, 
+320403, 283933, 678714, 827592, 798406, 573405, 830065, 852374, 762800, 398073, 
+129382, 621474, 951803, 410751, 668927, 448868, 592089, 109501, 486275, 146297, 
+528074, 336699, 166707, 806760, 862581, 974996, 335434, 431195, 361143, 638872, 
+780157, 280688, 745164, 985026, 136988, 378422, 559108, 993607, 494826, 565960
+
+        ];
+
+        // Şu anki dakikaya göre bir indeks hesapla
+        function getCurrentIndex() {
+            const now = new Date(); // Şu anki zamanı al
+            const minute = now.getUTCMinutes(); // UTC zamanının dakikasını al
+            return minute % codes.length; // Dakikayı şifre listesi uzunluğuna göre mod al
+        }
+
+        // Şifreyi gösteren fonksiyon
+        function displayVerificationCode() {
+            const currentIndex = getCurrentIndex(); // Mevcut indeks
+            const code = codes[currentIndex]; // Şifreyi seç
+            document.getElementById("verificationCode").textContent = code;
+        }
+
+        // Kopyalama fonksiyonu
+        function copyCode() {
+            const code = document.getElementById("verificationCode").textContent;
+            const textarea = document.createElement("textarea");
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand("copy");
+            document.body.removeChild(textarea);
+            alert("Şifre kopyalandı: " + code);
+        }
+
+        // Sayfa yüklendiğinde ve her 1 dakikada bir şifreyi güncelle
+        displayVerificationCode(); // İlk şifreyi göster
+        setInterval(displayVerificationCode, 60000); // 60000 ms = 1 dakika
+    </script>
+</body>
+</html>
+
         async function fetchCodes() {
             try {
                 const response = await fetch(gistURL);
