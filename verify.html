@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doğrulama Sayfası</title>
-    <link rel="stylesheet" href="style.css">
     <style>
         .container {
             text-align: center;
@@ -24,18 +23,14 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <p><span id="verificationCode">Yükleniyor...</span></p>
-        <!-- Kopyalama butonu -->
-        <button onclick="copyCode()">Şifreyi Kopyala</button>
+        <p><strong id="verificationCode">Yükleniyor...</strong></p> <!-- Şifre burada gösterilecek -->
+        
+        <!-- Şifreyi kaydet ve config.html'e git -->
+        <button onclick="saveCodeAndRedirect()">Şifreyi Kaydet ve config.html'e Git</button>
     </div>
 
     <script>
-        // URL'deki kodu almak için fonksiyon
-        function getCodeFromUrl() {
-            const urlParams = new URLSearchParams(window.location.hash.substring(1));
-            return urlParams.get('kod'); // 'kod' parametresi
-        }
-
+        // Şifreyi otomatik olarak oluşturma fonksiyonu
         function generateVerificationCode() {
             const timestamp = Math.floor(Date.now() / 60000);
             const code = (timestamp % 900000) + 100000;
@@ -43,36 +38,21 @@
         }
 
         function displayVerificationCode() {
-            const codeFromUrl = getCodeFromUrl(); // URL'deki kodu al
-            if (codeFromUrl) {
-                // URL'deki kod varsa, onu göster
-                document.getElementById("verificationCode").textContent = codeFromUrl;
-                localStorage.setItem("verificationCode", codeFromUrl); // localStorage'a kaydet
-            } else {
-                // URL'de kod yoksa, yeni bir doğrulama kodu oluştur
-                const code = generateVerificationCode();
-                document.getElementById("verificationCode").textContent = code;
-                localStorage.setItem("verificationCode", code); // localStorage'a kaydet
-            }
+            const code = generateVerificationCode();
+            document.getElementById("verificationCode").textContent = code;
         }
 
-        // Kopyalama fonksiyonu
-        function copyCode() {
+        // Şifreyi localStorage'a kaydet ve config.html'e yönlendir
+        function saveCodeAndRedirect() {
             const code = document.getElementById("verificationCode").textContent;
-            const textarea = document.createElement("textarea");
-            textarea.value = code;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand("copy");
-            document.body.removeChild(textarea);
-            alert("Şifre kopyalandı: " + code);
+            localStorage.setItem("verificationCode", code);  // Şifreyi localStorage'a kaydet
+            alert("Şifre kaydedildi: " + code);
+            window.location.href = "config.html";  // config.html sayfasına yönlendir
         }
 
         // Sayfa yüklendiğinde doğrulama kodunu göster
         displayVerificationCode();
-
-        // Her dakika doğrulama kodunu güncelle
-        setInterval(displayVerificationCode, 60000);
+        setInterval(displayVerificationCode, 60000); // Şifreyi her dakika yenile
     </script>
 </body>
 </html>
