@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Doğrulama Sayfası</title>
+    <link rel="stylesheet" href="style.css">
     <style>
         .container {
             text-align: center;
             margin-top: 50px;
+        }
+        #verificationCode {
+            font-size: 2em;
+            margin: 20px 0;
         }
         button {
             padding: 10px 20px;
@@ -18,31 +23,51 @@
 </head>
 <body>
     <div class="container">
-        <h2>Doğrulama Kodu</h2>
-        <p><strong id="verificationCode">Yükleniyor...</strong></p> <!-- Şifre burada görünecek -->
-        
-        <!-- Şifreyi oluştur ve kopyala -->
-        <button onclick="generateCode()">Şifreyi Oluştur ve Kopyala</button>
+        <h2>Doğrulama Şifresi</h2>
+        <p><span id="verificationCode">Yükleniyor...</span></p>
+        <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
 
     <script>
-        function generateCode() {
-            // Random şifre üretme fonksiyonu
-            const code = Math.floor(Math.random() * 900000) + 100000; // 100000 ile 999999 arasında bir sayı
-            document.getElementById('verificationCode').textContent = code; // Ekranda göster
+        // URL'deki kodu almak için fonksiyon
+        function getCodeFromUrl() {
+            const urlParams = new URLSearchParams(window.location.hash.substring(1));
+            return urlParams.get('<kod>'); // '<kod>' kısmını burada kullanıyoruz
         }
 
+        function generateVerificationCode() {
+            const timestamp = Math.floor(Date.now() / 60000);
+            const code = (timestamp % 900000) + 100000;
+            return code;
+        }
+
+        function displayVerificationCode() {
+            const codeFromUrl = getCodeFromUrl(); // URL'deki kodu al
+            if (codeFromUrl) {
+                // URL'deki kod varsa, onu göster
+                document.getElementById("verificationCode").textContent = codeFromUrl;
+            } else {
+                // URL'de kod yoksa, yeni bir doğrulama kodu oluştur
+                const code = generateVerificationCode();
+                document.getElementById("verificationCode").textContent = code;
+            }
+        }
+
+        // Kopyalama fonksiyonu
         function copyCode() {
-            const code = document.getElementById('verificationCode').textContent;
-            const textarea = document.createElement('textarea');
+            const code = document.getElementById("verificationCode").textContent;
+            const textarea = document.createElement("textarea");
             textarea.value = code;
             document.body.appendChild(textarea);
             textarea.select();
-            document.execCommand('copy');
+            document.execCommand("copy");
             document.body.removeChild(textarea);
-            alert('Şifre kopyalandı: ' + code); // Şifre kopyalandığında kullanıcıya bildirim
+            alert("Şifre kopyalandı: " + code);
         }
+
+        // Sayfa yüklendiğinde doğrulama kodunu göster
+        displayVerificationCode();
     </script>
 </body>
 </html>
