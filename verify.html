@@ -21,10 +21,28 @@
         <h2>Doğrulama Kodu</h2>
         <p><strong id="verificationCode">Yükleniyor...</strong></p> <!-- Şifre burada görünecek -->
         
-        <!-- Şifreyi kaydet ve config.html'e git -->
-        <button onclick="generateAndSaveCode()">Şifreyi Kaydet ve config.html'e Git</button>
+        <!-- Şifreyi oluştur ve kopyala -->
+        <button onclick="generateCode()">Şifreyi Oluştur ve Kopyala</button>
+        <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
 
-    <script src="verify.js"></script>
+    <script>
+        function generateCode() {
+            // Random şifre üretme fonksiyonu
+            const code = Math.floor(Math.random() * 900000) + 100000; // 100000 ile 999999 arasında bir sayı
+            document.getElementById('verificationCode').textContent = code; // Ekranda göster
+        }
+
+        function copyCode() {
+            const code = document.getElementById('verificationCode').textContent;
+            const textarea = document.createElement('textarea');
+            textarea.value = code;
+            document.body.appendChild(textarea);
+            textarea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textarea);
+            alert('Şifre kopyalandı: ' + code); // Şifre kopyalandığında kullanıcıya bildirim
+        }
+    </script>
 </body>
 </html>
