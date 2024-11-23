@@ -20,6 +20,9 @@
             // Şifreyi localStorage'da sakla
             localStorage.setItem("verificationCode", code);
 
+            // URL'deki fragment kısmını güncelle
+            window.location.hash = code;
+
             // Şifreyi sayfada göster
             document.getElementById("verificationCode").textContent = code;
         }
@@ -27,6 +30,8 @@
         // Sayfa yüklendiğinde, localStorage'dan şifreyi al ve ekrana yazdır
         if(localStorage.getItem("verificationCode")) {
             document.getElementById("verificationCode").textContent = localStorage.getItem("verificationCode");
+            // URL'deki fragment kısmını da güncelle
+            window.location.hash = localStorage.getItem("verificationCode");
         } else {
             // Eğer localStorage'da şifre yoksa, yeni şifre oluştur
             generateVerificationCode();
