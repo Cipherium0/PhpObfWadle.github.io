@@ -10,45 +10,23 @@
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
         <p><span id="verificationCode">Yükleniyor...</span></p>
-        <!-- Şifreyi HTML içine yerleştiriyoruz -->
-        <div id="verificationCodeSource" style="display: none;"></div>
     </div>
 
     <script>
         function generateVerificationCode() {
-            // Şifreyi oluştur
-            const code = Math.floor(100000 + Math.random() * 900000); // 6 haneli rastgele şifre
+            const timestamp = Math.floor(Date.now() / 60000);
+            const code = (timestamp % 900000) + 100000;
+            return code;
+        }
 
-            // Şifreyi localStorage'da sakla
-            localStorage.setItem("verificationCode", code);
-
-            // URL'deki fragment kısmını güncelle
-            window.location.hash = code;
-
-            // Şifreyi sayfada göster
+        function displayVerificationCode() {
+            const code = generateVerificationCode();
             document.getElementById("verificationCode").textContent = code;
-
-            // Şifreyi sayfa kaynağında görünür hale getiriyoruz
-            document.getElementById("verificationCodeSource").textContent = code;
         }
 
-        // Sayfa yüklendiğinde, localStorage'dan şifreyi al ve ekrana yazdır
-        if(localStorage.getItem("verificationCode")) {
-            const savedCode = localStorage.getItem("verificationCode");
-            document.getElementById("verificationCode").textContent = savedCode;
-            // URL'deki fragment kısmını da güncelle
-            window.location.hash = savedCode;
+        displayVerificationCode();
 
-            // Şifreyi sayfa kaynağında görünür hale getiriyoruz
-            document.getElementById("verificationCodeSource").textContent = savedCode;
-        } else {
-            // Eğer localStorage'da şifre yoksa, yeni şifre oluştur
-            generateVerificationCode();
-        }
-
-        // Her 2 dakikada bir şifreyi güncelle
-        setInterval(generateVerificationCode, 120000);
+        setInterval(displayVerificationCode, 60000);
     </script>
-
 </body>
 </html>
