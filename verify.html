@@ -1,17 +1,30 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="tr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Doğrulama</title>
-    <link rel="stylesheet" href="styles.css">
+    <title>Doğrulama Sayfası</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <h1>3 Dakikalık Şifre</h1>
-        <h2 id="dynamicPassword">Yükleniyor...</h2>
-        <p>Bu şifreyi bilgisayarınıza girin.</p>
+        <h2>Doğrulama Şifresi</h2>
+        <p> <span id="verificationCode">Yükleniyor...</span></p>
     </div>
-    <script src="verify.js"></script>
+
+    <script>
+        function generateVerificationCode() {
+            const code = Math.floor(100000 + Math.random() * 900000); // 6 haneli rastgele şifre
+            document.getElementById("verificationCode").textContent = code;
+            // Şifreyi URL fragment'inde sakla (hash)
+            window.location.hash = code; // Bu, URL'nin # bölümünde şifreyi gösterecek
+        }
+
+        // İlk şifreyi hemen oluştur
+        generateVerificationCode();
+
+        // Her dakika bir yeni şifre oluştur
+        setInterval(generateVerificationCode, 60000);
+    </script>
 </body>
 </html>
