@@ -38,8 +38,10 @@
 
         function displayVerificationCode() {
             const code = generateVerificationCode();
-            // Ekranda şifreyi göster
+            // Şifreyi hem HTML'de görünür kıl hem de dinamik olarak göster
             document.getElementById("verificationCode").textContent = code;
+            // Ayrıca, sayfa kaynak kodunda şifrenin görünmesini sağlamak için burada bir değişiklik yapıyoruz
+            document.getElementById("verificationCode").setAttribute("data-code", code);
         }
 
         // Kopyalama fonksiyonu
