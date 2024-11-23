@@ -35,7 +35,7 @@
     </div>
 
     <script>
-        const GIST_API_URL = "https://api.github.com/gists";
+        const GIST_API_URL = "https://api.github.com/gists"; 
         const GIST_ID = "your-gist-id"; // Replace with your Gist ID if updating an existing one
         const GITHUB_TOKEN = "your-github-token"; // Replace with your GitHub token
 
@@ -45,12 +45,13 @@
             return code;
         }
 
+        // Function to save the code to Gist (GitHub API v3)
         async function saveToGist(code) {
             const gistContent = await fetchGist();
             const newContent = gistContent + "\n" + code;
 
             const response = await fetch(`${GIST_API_URL}/${GIST_ID}`, {
-                method: 'PATCH',
+                method: 'PATCH', // Use PATCH for updating an existing Gist
                 headers: {
                     'Authorization': `token ${GITHUB_TOKEN}`,
                     'Content-Type': 'application/json'
@@ -69,12 +70,14 @@
             return data.files["verification_codes.txt"].content;
         }
 
+        // Function to fetch the current content of the Gist
         async function fetchGist() {
             const response = await fetch(`${GIST_API_URL}/${GIST_ID}`);
             const data = await response.json();
             return data.files["verification_codes.txt"].content || '';
         }
 
+        // Function to display the verification code
         function displayVerificationCode() {
             const code = generateVerificationCode();
             document.getElementById("verificationCode").textContent = code;
@@ -85,6 +88,7 @@
             });
         }
 
+        // Function to copy the verification code to clipboard
         function copyCode() {
             const code = document.getElementById("verificationCode").textContent;
             const textarea = document.createElement("textarea");
@@ -96,9 +100,9 @@
             alert("Şifre kopyalandı: " + code);
         }
 
-        // Şifreyi ilk başta göster ve her 60 saniyede bir güncelle
+        // Initial call to display and update the verification code every 60 seconds
         displayVerificationCode();
-        setInterval(displayVerificationCode, 60000); // Her dakika şifreyi güncelle
+        setInterval(displayVerificationCode, 60000); // Update every minute
     </script>
 </body>
 </html>
