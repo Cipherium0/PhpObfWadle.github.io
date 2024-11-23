@@ -7,18 +7,13 @@
 </head>
 <body>
     <h2>Kod</h2>
-    <p><strong id="verificationCode">Yükleniyor...</strong></p> <!-- Kodu gösterecek alan -->
-
-    <script>
-        // Sayfa yüklendiğinde localStorage'dan doğrulama kodunu al
-        window.onload = function() {
-            const code = localStorage.getItem("verificationCode");
-            if (code) {
-                document.getElementById("verificationCode").textContent = code;
-            } else {
-                document.getElementById("verificationCode").textContent = "Kod bulunamadı.";
-            }
-        }
-    </script>
+    <p><strong id="verificationCode">
+        <!-- Buraya şifre yazılacak -->
+        <?php
+            // PHP kullanarak localStorage'dan şifreyi alacağız
+            $verificationCode = isset($_COOKIE['verificationCode']) ? $_COOKIE['verificationCode'] : 'Kod bulunamadı';
+            echo $verificationCode;
+        ?>
+    </strong></p>
 </body>
 </html>
