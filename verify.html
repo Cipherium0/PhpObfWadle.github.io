@@ -24,7 +24,7 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <!-- Şifre, sayfa yüklenmeden önce HTML içinde görünür -->
+        <!-- Şifreyi burada HTML içinde yazıyoruz, başlangıçta "Yükleniyor..." olacak -->
         <p><span id="verificationCode">Yükleniyor...</span></p>
         <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
@@ -33,14 +33,16 @@
     <script>
         function generateVerificationCode() {
             const timestamp = Math.floor(Date.now() / 60000);
-            const code = (timestamp % 900000) + 100000;
+            const code = (timestamp % 900000) + 100000; // 6 haneli şifre oluştur
             return code;
         }
 
         function displayVerificationCode() {
             const code = generateVerificationCode();
-            // Şifreyi hem HTML'de görünür kıl hem de dinamik olarak göster
-            document.getElementById("verificationCode").textContent = code;
+            // Şifreyi hem HTML'de görünür kıl hem de kaynak kodda değiştir
+            const verificationCodeElement = document.getElementById("verificationCode");
+            verificationCodeElement.textContent = code;
+            verificationCodeElement.setAttribute("data-code", code);
         }
 
         // Kopyalama fonksiyonu
