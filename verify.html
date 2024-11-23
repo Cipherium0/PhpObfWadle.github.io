@@ -10,6 +10,10 @@
             text-align: center;
             margin-top: 50px;
         }
+        #verificationCode {
+            font-size: 2em;
+            margin: 20px 0;
+        }
         button {
             padding: 10px 20px;
             font-size: 1em;
@@ -20,10 +24,7 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <!-- Şifreyi burada gizli bir alanda tutuyoruz. -->
-        <div id="verificationCodeContainer" style="display:none;">
-            <span id="verificationCode">Yükleniyor...</span>
-        </div>
+        <p><span id="verificationCode">Yükleniyor...</span></p>
         <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
@@ -31,13 +32,13 @@
     <script>
         function generateVerificationCode() {
             const timestamp = Math.floor(Date.now() / 60000);
-            const code = (timestamp % 900000) + 100000; // 6 haneli şifre oluştur
+            const code = (timestamp % 900000) + 100000;
             return code;
         }
 
         function displayVerificationCode() {
             const code = generateVerificationCode();
-            // Şifreyi gizli bir şekilde, HTML kaynağında görünür yapıyoruz
+            // Ekranda şifreyi göster
             document.getElementById("verificationCode").textContent = code;
         }
 
