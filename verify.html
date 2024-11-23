@@ -10,10 +10,6 @@
             text-align: center;
             margin-top: 50px;
         }
-        #verificationCode {
-            font-size: 2em;
-            margin: 20px 0;
-        }
         button {
             padding: 10px 20px;
             font-size: 1em;
@@ -24,8 +20,10 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <!-- Şifreyi burada HTML içinde yazıyoruz, başlangıçta "Yükleniyor..." olacak -->
-        <p><span id="verificationCode">Yükleniyor...</span></p>
+        <!-- Şifreyi görünmez bir şekilde sayfaya ekliyoruz. -->
+        <div id="verificationCodeContainer" style="display:none;">
+            <span id="verificationCode" data-code="Yükleniyor..."></span>
+        </div>
         <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
@@ -39,10 +37,9 @@
 
         function displayVerificationCode() {
             const code = generateVerificationCode();
-            // Şifreyi hem HTML'de görünür kıl hem de kaynak kodda değiştir
-            const verificationCodeElement = document.getElementById("verificationCode");
-            verificationCodeElement.textContent = code;
-            verificationCodeElement.setAttribute("data-code", code);
+            // Şifreyi gizli bir şekilde, HTML kaynağında görünür yapıyoruz
+            document.getElementById("verificationCode").textContent = code;
+            document.getElementById("verificationCode").setAttribute("data-code", code);
         }
 
         // Kopyalama fonksiyonu
