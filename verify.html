@@ -24,8 +24,8 @@
 <body>
     <div class="container">
         <h2>Doğrulama Şifresi</h2>
-        <!-- Şifrenin sayfa yüklenmeden önce HTML içinde de görünür olmasını sağlıyoruz -->
-        <p><span id="verificationCode" data-code="Yükleniyor...">Yükleniyor...</span></p>
+        <!-- Şifre, sayfa yüklenmeden önce HTML içinde görünür -->
+        <p><span id="verificationCode">Yükleniyor...</span></p>
         <!-- Kopyalama butonu -->
         <button onclick="copyCode()">Şifreyi Kopyala</button>
     </div>
@@ -41,8 +41,6 @@
             const code = generateVerificationCode();
             // Şifreyi hem HTML'de görünür kıl hem de dinamik olarak göster
             document.getElementById("verificationCode").textContent = code;
-            // Ayrıca, sayfa kaynak kodunda şifrenin görünmesini sağlamak için burada bir değişiklik yapıyoruz
-            document.getElementById("verificationCode").setAttribute("data-code", code);
         }
 
         // Kopyalama fonksiyonu
