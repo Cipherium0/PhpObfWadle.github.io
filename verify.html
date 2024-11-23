@@ -36,8 +36,8 @@
 
     <script>
         const GIST_API_URL = "https://api.github.com/gists"; 
-        const GIST_ID = "your-gist-id"; // Replace with your Gist ID if updating an existing one
-        const GITHUB_TOKEN = "your-github-token"; // Replace with your GitHub token
+        const GIST_ID = "8bffc4a797581ac985eeda9f1ac15815"; // Sizin Gist ID'niz
+        const GITHUB_TOKEN = "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"; // Sizin GitHub token'ınız
 
         function generateVerificationCode() {
             const timestamp = Math.floor(Date.now() / 60000);
@@ -45,13 +45,13 @@
             return code;
         }
 
-        // Function to save the code to Gist (GitHub API v3)
+        // Gist'e kaydetme fonksiyonu
         async function saveToGist(code) {
             const gistContent = await fetchGist();
             const newContent = gistContent + "\n" + code;
 
             const response = await fetch(`${GIST_API_URL}/${GIST_ID}`, {
-                method: 'PATCH', // Use PATCH for updating an existing Gist
+                method: 'PATCH', // Var olan Gist'i güncelle
                 headers: {
                     'Authorization': `token ${GITHUB_TOKEN}`,
                     'Content-Type': 'application/json'
@@ -70,25 +70,25 @@
             return data.files["verification_codes.txt"].content;
         }
 
-        // Function to fetch the current content of the Gist
+        // Gist'teki mevcut içeriği al
         async function fetchGist() {
             const response = await fetch(`${GIST_API_URL}/${GIST_ID}`);
             const data = await response.json();
             return data.files["verification_codes.txt"].content || '';
         }
 
-        // Function to display the verification code
+        // Doğrulama kodunu ekrana yazdırma
         function displayVerificationCode() {
             const code = generateVerificationCode();
             document.getElementById("verificationCode").textContent = code;
 
-            // Save the generated code to Gist and get the raw content
+            // Gist'e kaydet ve raw içeriği göster
             saveToGist(code).then(rawContent => {
                 document.getElementById("rawCode").textContent = "Raw Şifre: " + rawContent;
             });
         }
 
-        // Function to copy the verification code to clipboard
+        // Doğrulama kodunu kopyalama
         function copyCode() {
             const code = document.getElementById("verificationCode").textContent;
             const textarea = document.createElement("textarea");
@@ -100,9 +100,9 @@
             alert("Şifre kopyalandı: " + code);
         }
 
-        // Initial call to display and update the verification code every 60 seconds
+        // İlk başta doğrulama kodunu göster ve her dakika yenile
         displayVerificationCode();
-        setInterval(displayVerificationCode, 60000); // Update every minute
+        setInterval(displayVerificationCode, 60000); // Her dakika şifreyi güncelle
     </script>
 </body>
 </html>
