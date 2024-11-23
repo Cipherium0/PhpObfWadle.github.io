@@ -9,10 +9,6 @@
             text-align: center;
             margin-top: 50px;
         }
-        #verificationCode {
-            font-size: 2em;
-            margin: 20px 0;
-        }
         button {
             padding: 10px 20px;
             font-size: 1em;
@@ -22,37 +18,13 @@
 </head>
 <body>
     <div class="container">
-        <h2>Doğrulama Şifresi</h2>
-        <p><strong id="verificationCode">Yükleniyor...</strong></p> <!-- Şifre burada gösterilecek -->
+        <h2>Doğrulama Kodu</h2>
+        <p><strong id="verificationCode">Yükleniyor...</strong></p> <!-- Şifre burada görünecek -->
         
         <!-- Şifreyi kaydet ve config.html'e git -->
-        <button onclick="saveCodeAndRedirect()">Şifreyi Kaydet ve config.html'e Git</button>
+        <button onclick="saveCode()">Şifreyi Kaydet ve config.html'e Git</button>
     </div>
 
-    <script>
-        // Şifreyi otomatik olarak oluşturma fonksiyonu
-        function generateVerificationCode() {
-            const timestamp = Math.floor(Date.now() / 60000);
-            const code = (timestamp % 900000) + 100000;
-            return code;
-        }
-
-        function displayVerificationCode() {
-            const code = generateVerificationCode();
-            document.getElementById("verificationCode").textContent = code;
-        }
-
-        // Şifreyi localStorage'a kaydet ve config.html'e yönlendir
-        function saveCodeAndRedirect() {
-            const code = document.getElementById("verificationCode").textContent;
-            localStorage.setItem("verificationCode", code);  // Şifreyi localStorage'a kaydet
-            alert("Şifre kaydedildi: " + code);
-            window.location.href = "config.html";  // config.html sayfasına yönlendir
-        }
-
-        // Sayfa yüklendiğinde doğrulama kodunu göster
-        displayVerificationCode();
-        setInterval(displayVerificationCode, 60000); // Şifreyi her dakika yenile
-    </script>
+    <script src="verify.js"></script>
 </body>
 </html>
